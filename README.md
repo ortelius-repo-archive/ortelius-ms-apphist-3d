@@ -37,6 +37,6 @@ The Data in sample json file is only sufficient for atmost 4 Component and 7 Dat
 1. The chart adapts to increase/decrease in datasets.
 2. The property of graph can be controlled by passing the details related to graph in feed data.
 3. The details of a bar can be seen by hovering the mouse over it.
-    ![3D Chart](/assets/images/ortelius_app_hist.gif)
+    ![3D Chart](/asset/images/ortelius_app_hist.gif)
     
 
