@@ -1,0 +1,145 @@
+{
+    "graphDetails": {
+        "axisStep": 2,
+        "noOfComponents": 4,
+        "noOfDetasetPerComponent": 7,
+        "style":"bar-color",
+        "color": ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "red", "orange"],
+        "height": "600px",
+        "width": "800px"
+    },
+    "data": [
+      {
+        "componentName": "Compoment::1",
+        "deploymentData": [
+          {
+            "timestamp": 1581445800,
+            "buildVersion": "foo v1.0.0"
+          },
+          {
+            "timestamp": 1583778600,
+            "buildVersion": "foo v1.0.1"
+          },
+          {
+            "timestamp": 584210600,
+            "buildVersion": "foo v1.0.2"
+          },
+          {
+            "timestamp": 1585679400,
+            "buildVersion": "foo v2.0.0"
+          },
+          {
+            "timestamp": 1589221800,
+            "buildVersion": "foo v2.0.1"
+          },
+          {
+            "timestamp": 1593023400,
+            "buildVersion": "foo v3.0.1"
+          },
+          {
+            "timestamp": 1593024600,
+            "buildVersion": "foo v3.0.8"
+          }
+        ]
+      },
+      {
+        "componentName": "Compoment::2",
+        "deploymentData": [
+          {
+            "timestamp": 1581445800,
+            "buildVersion": "bar v1.0.0"
+          },
+          {
+            "timestamp": 1583778600,
+            "buildVersion": "bar v1.0.1"
+          },
+          {
+            "timestamp": 584210600,
+            "buildVersion": "bar v1.0.2"
+          },
+          {
+            "timestamp": 1585679400,
+            "buildVersion": "bar v1.0.2"
+          },
+          {
+            "timestamp": 1589221800,
+            "buildVersion": "bar v2.0.1"
+          },
+          {
+            "timestamp": 1593023400,
+            "buildVersion": "bar v2.0.1"
+          },
+          {
+            "timestamp": 1593024600,
+            "buildVersion": "bar v2.0.1"
+          }
+        ]
+      },
+      {
+        "componentName": "Compoment::3",
+        "deploymentData": [
+          {
+            "timestamp": 1581445800,
+            "buildVersion": "foo v1.0.0"
+          },
+          {
+            "timestamp": 1583778600,
+            "buildVersion": "foo v1.0.1"
+          },
+          {
+            "timestamp": 584210600,
+            "buildVersion": "foo v1.0.2"
+          },
+          {
+            "timestamp": 1585679400,
+            "buildVersion": "foo v2.0.0"
+          },
+          {
+            "timestamp": 1589221800,
+            "buildVersion": "foo v2.0.1"
+          },
+          {
+            "timestamp": 1593023400,
+            "buildVersion": "foo v3.0.1"
+          },
+          {
+            "timestamp": 1593024600,
+            "buildVersion": "foo v3.0.11"
+          }
+        ]
+      },
+      {
+        "componentName": "Compoment::4",
+        "deploymentData": [
+          {
+            "timestamp": 1581445800,
+            "buildVersion": "bar v1.0.0"
+          },
+          {
+            "timestamp": 1583778600,
+            "buildVersion": "bar v1.0.1"
+          },
+          {
+            "timestamp": 584210600,
+            "buildVersion": "bar v1.0.2"
+          },
+          {
+            "timestamp": 1585679400,
+            "buildVersion": "bar v1.0.2"
+          },
+          {
+            "timestamp": 1589221800,
+            "buildVersion": "bar v2.0.1"
+          },
+          {
+            "timestamp": 1593023400,
+            "buildVersion": "bar v2.0.1"
+          },
+          {
+            "timestamp": 1593024600,
+            "buildVersion": "bar v2.0.1"
+          }
+        ]
+      }
+    ]
+  }

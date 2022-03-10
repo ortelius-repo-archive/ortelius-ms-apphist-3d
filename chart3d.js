@@ -2,47 +2,65 @@
 var data = null;
 var graph = null;
 
-function custom(x, y) {
-    return (-Math.sin(x / Math.PI) * Math.cos(y / Math.PI) * 10 + 10) * 1000;
-}
+function drawVisualization(refData) {
 
-function drawVisualization() {
-    var style = document.getElementById("style").value;
-    var withValue =
-        ["bar-color", "bar-size", "dot-size", "dot-color"].indexOf(style) != -1;
+    var graphStyle = refData ? refData.graphDetails.style : "bar";
+    var graphWidth = refData ? refData.graphDetails.width : "600px";
+    var graphHeight = refData ? refData.graphDetails.height : "400px";
+    var graphAxisStep = refData ? refData.graphDetails.axisStep : 2;
+    data = [];
 
-    // Create and populate a data table.
-    data = new vis.DataSet();
+    generateSampleData(data, refData)
 
-    generateSampleData(withValue, data);
-
-    console.log(data);
     // specify options
     var options = {
-        width: "600px",
-        height: "600px",
-        style: style,
+        width: graphWidth,
+        height: graphHeight,
+        style: graphStyle,
         showPerspective: true,
         showGrid: true,
         showShadow: false,
 
-        // Option tooltip can be true, false, or a function returning a string with HTML contents
-        //tooltip: true,
-        tooltip: function (point) {
-            // parameter point contains properties x, y, z
-            return "value: <b>" + point.z + "</b>";
-        },
-
         xValueLabel: function (value) {
-            return moment().add(value, "days").format("DD MMM");
+            return value;
         },
 
         yValueLabel: function (value) {
-            return value * 10 + "%";
+            return value;
         },
 
         zValueLabel: function (value) {
-            return value / 1000 + "K";
+            return value;
+        },
+
+        // Option tooltip can be true, false, or a function returning a string with HTML contents
+        tooltip: function (point) {
+
+            console.log(point)
+            if (baseMap) {
+                return "Component Name: <b>" + point.data.extra.componentName + "</b><br>" +
+                    "Version: <b>" + point.data.extra.deploymentData[point.y / graphAxisStep].buildVersion + "</b><br>" +
+                    "Timestamp: <b>" + new Date(point.data.extra.deploymentData[point.y / graphAxisStep].timestamp) + "</b><br>"
+            }
+
+            return "Component Name: <b>" + point.data.extra.componentName + "</b><br>" +
+                "Version: <b>" + point.z + "</b><br>" +
+                "Timestamp: <b>" + new Date(point.data.extra.deploymentData[point.y / graphAxisStep].timestamp) + "</b><br>"
+        },
+
+        // Tooltip default styling can be overridden
+        tooltipStyle: {
+            content: {
+                background: "rgba(255, 255, 255, 0.7)",
+                padding: "10px",
+                borderRadius: "10px",
+            },
+            line: {
+                borderLeft: "1px dotted rgba(0, 0, 0, 0.5)",
+            },
+            dot: {
+                border: "5px solid rgba(0, 0, 0, 0.5)",
+            },
         },
 
         keepAspectRatio: true,
@@ -50,35 +68,90 @@ function drawVisualization() {
     };
 
     var camera = graph ? graph.getCameraPosition() : null;
-
-    // create our graph
     var container = document.getElementById("mygraph");
-    // console.log(JSON.stringify(data));
     graph = new vis.Graph3d(container, data, options);
-
     if (camera) graph.setCameraPosition(camera); // restore camera position
 
-    document.getElementById("style").onchange = drawVisualization;
+    // document.getElementById("style").onchange = drawVisualization;
 }
 
-function generateSampleData(withValue, data) {
+function normalizeValuesZAxis(metaData) {
 
-    var steps = 5; // number of datapoints will be steps*steps
-    var axisMax = 10;
-    var axisStep = axisMax / steps;
-    for (var x = 0; x <= axisMax; x += axisStep) {
-        for (var y = 0; y <= axisMax; y += axisStep) {
-            var z = custom(x, y);
-            if (withValue) {
-                var value = y - x;
-                data.add({ x: x, y: y, z: z, style: value });
+    let linkedBaseVersionMap = new Map();
+    var baseVersion = null
+    var baseVersionIndex = 0
+
+    console.log(metaData)
+    metaData.deploymentData.forEach(element => {
+
+        if (linkedBaseVersionMap.size == 0) {
+            baseVersion = element.buildVersion
+            linkedBaseVersionMap.set(baseVersionIndex, new Array(baseVersion, 10))
+            baseVersionIndex += 1
+        } else {
+
+            var newBaseVersion = element.buildVersion
+            if (baseVersion != newBaseVersion) {
+
+                var newZ = linkedBaseVersionMap.get(baseVersionIndex - 1)[1] + 5
+                linkedBaseVersionMap.set(baseVersionIndex, new Array(newBaseVersion, newZ))
+                baseVersionIndex += 1
+                baseVersion = newBaseVersion
             } else {
-                data.add({ x: x, y: y, z: z });
+                var newZ = linkedBaseVersionMap.get(baseVersionIndex - 1)[1]
+                linkedBaseVersionMap.set(baseVersionIndex, new Array(newBaseVersion, newZ))
+                baseVersionIndex += 1
             }
+        }
+    });
+
+    return linkedBaseVersionMap
+}
+
+function generateSampleData(data, refData) {
+
+    if (refData) {
+        var axisStep = refData.graphDetails.axisStep; //let n = 2
+        var xAxis = (refData.graphDetails.noOfComponents - 1)*axisStep; // there will be (noOfComponents/n + 1) rows -- x-Axis Value
+        var yAxis = (refData.graphDetails.noOfDetasetPerComponent - 1) * axisStep;
+        colors = refData.graphDetails.color;
+
+        for (var x = 0; x <= xAxis; x += axisStep) {
+            for (var y = 0; y <= yAxis; y += axisStep) {
+
+                data.push({
+                    x: x,
+                    y: y,
+                    z: 0,
+                    style: {
+                        fill: colors[x],
+                        stroke: "#999",
+                    }
+                });
+            }
+        }
+
+
+        for (let i = 0; i < data.length; i++) {
+            baseMap = normalizeValuesZAxis(refData.data[data[i].x / axisStep]);
+            data[i].extra = refData.data[data[i].x / axisStep]
+            data[i].z = baseMap.get(data[i].y / axisStep)[1]
         }
     }
 }
 
 window.addEventListener("load", () => {
-    drawVisualization();
+    start()
 });
+
+const start = async function () {
+    // const response = await fetch("http://localhost:8080/getData");
+    // return await response.json();
+    const response = await fetch("data/input_data.json");
+    return await response.json();
+}
+
+start()
+    .then(
+        c => drawVisualization(c)
+    )
